@@ -3,13 +3,21 @@ var express = require('express');
 var mbaasExpress = mbaasApi.mbaasExpress();
 var cors = require('cors');
 
+
+// Securable endpoints: list the endpoints which you want to make securable here
+var securableEndpoints = ['months'];
+
 var app = express();
 
 // Enable CORS for all requests
 app.use(cors());
 
 // Note: the order which we add middleware to Express here is important!
+app.use('/sys', mbaasExpress.sys(securableEndpoints));
 app.use('/mbaas', mbaasExpress.mbaas);
+
+// allow serving of static files from the public directory
+app.use(express.static(__dirname + '/public'));
 
 // Note: important that this is added just before your own Routes
 app.use(mbaasExpress.fhmiddleware());
@@ -18,11 +26,6 @@ app.use(mbaasExpress.fhmiddleware());
  * Base Datasource endpoint for dealing with RESTful datasource requests
  */
 app.use('/static_ds', require('./lib/static-datasource.js'));
-
-// You can define custom URL handlers here, like this one:
-app.use('/', function(req, res) {
-  res.end('Your Cloud App is Running');
-});
 
 // Important that this is last!
 app.use(mbaasExpress.errorHandler());
