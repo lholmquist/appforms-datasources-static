@@ -12,13 +12,6 @@ var app = express();
 // Enable CORS for all requests
 app.use(cors());
 
-// Note: the order which we add middleware to Express here is important!
-app.use('/sys', mbaasExpress.sys(securableEndpoints));
-app.use('/mbaas', mbaasExpress.mbaas);
-
-// Note: important that this is added just before your own Routes
-app.use(mbaasExpress.fhmiddleware());
-
 /**
  * Base Datasource endpoint for dealing with RESTful datasource requests
  */
@@ -28,6 +21,13 @@ app.use('/static_ds', require('./lib/static-datasource.js'));
 app.use('/', function(req, res) {
   res.end('Your Cloud App is Running');
 });
+
+// Note: the order which we add middleware to Express here is important!
+app.use('/sys', mbaasExpress.sys(securableEndpoints));
+app.use('/mbaas', mbaasExpress.mbaas);
+
+// Note: important that this is added just before your own Routes
+app.use(mbaasExpress.fhmiddleware());
 
 // Important that this is last!
 app.use(mbaasExpress.errorHandler());
