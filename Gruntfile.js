@@ -62,24 +62,21 @@ module.exports = function(grunt) {
       unit: {
         options: {
           stdout: true,
-          stderr: true,
-          failOnError: true
+          stderr: true
         },
-        command: 'env NODE_PATH=. ./node_modules/.bin/turbo test/unit'
+        command: 'env NODE_PATH=. ./node_modules/.bin/mocha -A -u exports --recursive test/unit/'
       },
-      accept: {
+     accept: {
         options: {
           stdout: true,
-          stderr: true,
-          failOnError: true
+          stderr: true
         },
-        command: 'env NODE_PATH=. ./node_modules/.bin/turbo --setUp=test/accept/server.js --tearDown=test/accept/server.js test/accept'
+        command: 'env NODE_PATH=. ./node_modules/.bin/mocha -A -u exports --recursive test/server.js test/accept/'
       },
       coverage_unit: {
         options: {
           stdout: true,
-          stderr: true,
-          failOnError: true
+          stderr: true
         },
         command: [
           'rm -rf coverage cov-unit',
@@ -91,8 +88,7 @@ module.exports = function(grunt) {
       coverage_accept: {
         options: {
           stdout: true,
-          stderr: true,
-          failOnError: true
+          stderr: true
         },
         command: [
           'rm -rf coverage cov-accept',
@@ -121,15 +117,21 @@ module.exports = function(grunt) {
           'plato': ['lib/**/*.js']
         }
       }
-    }
+    },
+    jshint: {
+      files: ['*.js', 'lib/**/*.js', 'test/**/*.js'],
+      options: {
+        jshintrc: true
+      }
+    },
   });
 
   // Load NPM tasks
   require('load-grunt-tasks')(grunt, {scope: 'devDependencies'});
 
   // Testing tasks
-  grunt.registerTask('test', ['shell:unit', 'shell:accept']);
-  grunt.registerTask('unit', ['shell:unit']);
+  grunt.registerTask('test', ['jshint', 'shell:unit', 'shell:accept']);
+  grunt.registerTask('unit', ['jshint', 'shell:unit']);
   grunt.registerTask('accept', ['env:local', 'shell:accept']);
 
   // Coverate tasks
