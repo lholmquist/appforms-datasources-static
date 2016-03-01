@@ -1,5 +1,6 @@
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
+var request = require('supertest');
 
 // mock out express app to allow verification in tests
 var mockExpress = {
@@ -119,4 +120,17 @@ exports['test all required middleware is added to express'] = function(done) {
 
   mock.verify();
   return done();
+};
+
+exports['test returned months data'] = function (done) {
+  mockMbaasApi = createMockMbaasApi();
+  var app = proxyquire('application.js', {
+    'fh-mbaas-api': mockMbaasApi,
+    'cors': mockCors
+  });
+  request(app)
+  .get('/static_ds/months', function (err, response) {
+    console.log(err, response);
+    return done();
+  })
 };
