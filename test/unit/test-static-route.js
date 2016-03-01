@@ -45,8 +45,13 @@ var app = proxyquire('../../application.js', mocks);
 
 exports['test returned months data'] = function (done) {
   request(app)
-  .get('/static_ds/months').end(function (err, response) {
-    console.log(err, response);
+  .get('/static_ds/months').expect(200).end(function (err, response) {
+    var body = response.body;
+
+    assert(Array.isArray(body), 'response body should be an array');
+    assert.equal(body[0].key, '01', 'first key is 01');
+    assert.equal(body[0].value, 'January', 'first value is January');
+    assert(body[0].selected, 'first value should be selected');
     return done();
   })
 };
