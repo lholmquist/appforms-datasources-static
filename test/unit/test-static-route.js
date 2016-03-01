@@ -14,10 +14,8 @@ var mbaasApiStub = {
             sys: function () {
                 return function (req, res, next) {return next()};
             },
-            mbaas: function () {
-                return function (req, res, next) {
-                    return next()
-                };
+            mbaas: function (req, res, next) {
+                return next()
             },
             fhmiddleware: function () {
                 console.log('middleware')
@@ -38,8 +36,7 @@ var mbaasApiStub = {
 }
 
 var mocks = {
-    'fh-mbaas-api': mbaasApiStub,
-    'cors': corsMock
+    'fh-mbaas-api': mbaasApiStub
 };
 
 
@@ -48,7 +45,7 @@ var app = proxyquire('../../application.js', mocks);
 
 exports['test returned months data'] = function (done) {
   request(app)
-  .get('/static_ds/months', function (err, response) {
+  .get('/static_ds/months').end(function (err, response) {
     console.log(err, response);
     return done();
   })
